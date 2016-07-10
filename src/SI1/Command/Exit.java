@@ -1,10 +1,7 @@
-package Command;
+package SI1.Command;
 
 import java.sql.Connection;
 
-/**
- * Created by Tiago on 14/06/2016.
- */
 public class Exit implements Command {
     @Override
     public void execute(Connection con) {
@@ -14,5 +11,10 @@ public class Exit implements Command {
     @Override
     public String getCommand() {
         return "exit";
+    }
+
+    @Override
+    public String description() {
+        return "Fecha a aplicação";
     }
 }
