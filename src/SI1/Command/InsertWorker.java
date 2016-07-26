@@ -18,11 +18,13 @@ public class InsertWorker implements Command {
             System.out.println("Introduza o numero do funcionario:");
             int numFunc = in.nextInt();
             preparedStatement.setInt(1,numFunc);
+            in.nextLine();
             System.out.println("Introduza o nome do funcionario:");
             String name = in.nextLine();
             preparedStatement.setString(2,name);
             System.out.println("Introduza o BI do funcionario:");
             int bi = in.nextInt();
+            in.nextLine();
             preparedStatement.setInt(3,bi);
             System.out.println("Introduza a morada do funcionario:");
             String morada = in.nextLine();
@@ -30,6 +32,7 @@ public class InsertWorker implements Command {
             System.out.println("Introduza o codigo do armazem onde o funcionario trabalha:");
             int codArm = in.nextInt();
             preparedStatement.setInt(5, codArm);
+            preparedStatement.execute();
             con.commit();
         } catch (SQLException e) {
             System.out.println("Erro na criaçao de novo funcionario");

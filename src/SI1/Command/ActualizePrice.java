@@ -15,29 +15,31 @@ public class ActualizePrice implements Command {
         Statement statement = null;
         PreparedStatement preparedStatement = null;
         ResultSet rs= null;
-        ResultSet rs2 = null;
         try{
             con.setAutoCommit(false);
             statement = con.createStatement();
-            String SQLcommand = "select HistoricoPreço.DataInicio, HistoricoPreço.DataFim from HistorioPreço.Ref = "+
-                    ref +" order by HistoricoPreço.DataInicio desc";
+            String SQLcommand = "select HistoricoPreço.DataInicio, HistoricoPreço.DataFim from HistoricoPreço where HistoricoPreço.Ref = "+ ref +" order by HistoricoPreço.DataInicio desc";
             rs = statement.executeQuery(SQLcommand);
             preparedStatement = con.prepareStatement("insert into HistoricoPreço(DataInicio,Preço,DataFim,Ref) values(?,?,?,?)");
-            if(rs.getDate(2) == null){
-                rs2 = statement.executeQuery("select Preço from HistoricoPreço where Ref = "+
-                        ref+"and DataInicio = " + rs.getDate(1));
-                statement.executeQuery("delete from HistoricoPreço where HistoricoPreço.Ref = "+
-                        ref+" and HistoricoPreço.DataInicio = "+ rs.getDate(1));
-                preparedStatement.setDate(1,rs.getDate(1));
-                preparedStatement.setFloat(2, rs2.getFloat(1));
-                preparedStatement.setDate(3, Date.valueOf(LocalDate.now()));
-                preparedStatement.setInt(4, ref);
-                con.commit();
+            try{
+                rs.getDate(2);
+            }catch (SQLException e) {
+                statement.execute("begin transaction T1 " +
+                        "begin try " +
+                        "UPDATE HistoricoPreço " +
+                        "SET DataFim = " + Date.valueOf(LocalDate.now()) + " "+
+                        "WHERE Ref = " + ref + " " +
+                        "commit transaction T1 " +
+                        "end try " +
+                        "begin catch " +
+                        "rollback transaction T1 " +
+                        "end catch");
             }
             preparedStatement.setDate(1, Date.valueOf(LocalDate.now()));
             preparedStatement.setFloat(2, price);
             preparedStatement.setDate(3, null);
             preparedStatement.setInt(4, ref);
+            preparedStatement.execute();
             con.commit();
 
         } catch (SQLException e) {
@@ -51,8 +53,6 @@ public class ActualizePrice implements Command {
                     statement.close();
                 if(rs!=null)
                     rs.close();
-                if(rs2!=null)
-                    rs2.close();
                 if(con != null)
                     con.setAutoCommit(true);
             } catch (SQLException e) {

@@ -23,7 +23,7 @@ public class Main{
 
     public static void main(String[] args) {
         Connection con = null;
-        String url = "jdbc:sqlserver://localhost;databaseName=SI1;user=sa;password=LEIC;";
+        String url = "jdbc:sqlserver://localhost;databaseName=SI1;user=sa;password=isel;";
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             con = DriverManager.getConnection(url);

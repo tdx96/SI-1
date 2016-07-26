@@ -20,8 +20,9 @@ public class ShowProducts implements Command {
             int numCols = rs.getMetaData().getColumnCount();
             while(rs.next()){
                 for (int i = 1; i <= numCols; i++) {
-                    System.out.println("COlUMN "+ i + " = " + rs.getObject(i));
+                    System.out.print(rs.getObject(i) + " ");
                 }
+                System.out.println();
             }
         } catch (SQLException e) {
             System.out.println("Erro na listagem dos produtos");

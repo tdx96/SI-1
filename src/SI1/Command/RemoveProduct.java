@@ -15,17 +15,34 @@ public class RemoveProduct implements Command {
         Statement statement = null;
         ResultSet rs = null;
         try {
+            con.setAutoCommit(false);
             statement = con.createStatement();
             rs = statement.executeQuery("select Referencia from ProdutoArmazenadoEm where Referencia = " + ref);
-            rs.last();
-            if(rs.getRow() > 0){
+            if(rs.next()){
                 System.out.println("Não pode ser removido");
                 return;
             }
-            statement.executeQuery("delete from EntradaDe where Ref = "+ref);
-            statement.executeQuery("delete from MovimentoDe where Ref = "+ref);
-            statement.executeQuery("delete from HistoricoPreço where Ref = "+ref);
-            statement.executeQuery("delete from Produto where Ref = "+ref);
+            try{
+                statement.executeQuery("delete from EntradaDe where Ref = "+ref);
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+            try{
+                statement.executeQuery("delete from MovimentoDe where Ref = "+ref);
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+            try{
+                statement.executeQuery("delete from HistoricoPreço where Ref = "+ref);
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+            try{
+                statement.executeQuery("delete from Produto where Ref = "+ref);
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+            con.commit();
         } catch (SQLException e) {
             System.out.println("Erro na remoção");
             System.out.println(e.getMessage());
@@ -35,6 +52,8 @@ public class RemoveProduct implements Command {
                     statement.close();
                 if(rs!=null)
                     rs.close();
+                if(con!= null)
+                    con.setAutoCommit(true);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

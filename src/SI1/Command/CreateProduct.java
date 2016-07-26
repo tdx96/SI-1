@@ -24,11 +24,13 @@ public class CreateProduct implements Command {
             System.out.println("Introduza o volume do produto:");
             float volume = in.nextFloat();
             preparedStatement.setFloat(3,volume);
+            in.nextLine();
             System.out.println("Introduza a descrição do produto:");
             String descricao = in.nextLine();
             preparedStatement.setString(4,descricao);
-
+            preparedStatement.execute();
             con.commit();
+
         }catch (SQLException e){
             System.out.println("Erro na criação do produto!");
             System.out.println(e.getMessage());

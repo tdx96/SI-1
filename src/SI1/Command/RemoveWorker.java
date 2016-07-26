@@ -13,17 +13,21 @@ public class RemoveWorker implements Command {
         Statement statement = null;
         ResultSet rs = null;
         try{
+            con.setAutoCommit(false);
             statement=con.createStatement();
             System.out.println("Numero do funcionario a remover:");
             int numfunc = in.nextInt();
             rs = statement.executeQuery("select NumFunc from Movimento where NumFunc = "+numfunc);
-            rs.last();
-            if(rs.getRow() > 0){
+            if(rs.next()){
                 System.out.println("Não é possivel remover o funcionario:"+ numfunc);
                 return;
             }
-            statement.executeQuery("delete from Funcionario where NumFunc = "+numfunc);
-
+            try {
+                statement.executeQuery("delete from Funcionario where NumFunc = " + numfunc);
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            }
+            con.commit();
         } catch (SQLException e) {
             System.out.println("Erro na remoção do funcionario");
             System.out.println(e.getMessage());
@@ -33,6 +37,8 @@ public class RemoveWorker implements Command {
                     statement.close();
                 if(rs!=null)
                     rs.close();
+                if(con!=null)
+                    con.setAutoCommit(true);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
