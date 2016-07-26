@@ -16,6 +16,7 @@ public class CreateProduct implements Command {
             preparedStatement = con.prepareStatement("insert into dbo.Produto(Ref,Nome,Volume,Descricao) values(?,?,?,?)");
             System.out.println("Introduza a referencia do produto:");
             int ref = in.nextInt();
+            in.nextLine();
             preparedStatement.setInt(1,ref);
             System.out.println("Introduza o nome do produto:");
             String name = in.nextLine();

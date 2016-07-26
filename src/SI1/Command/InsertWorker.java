@@ -12,7 +12,9 @@ public class InsertWorker implements Command {
         PreparedStatement preparedStatement = null;
         try{
             con.setAutoCommit(false);
-            preparedStatement = con.prepareStatement("insert into Funcionario(NumFunc,Nome,BI,Morada,CodArmazem) values (?,?,?,?,?)");
+            preparedStatement = con.prepareStatement(
+                    "insert into Funcionario(NumFunc,Nome,BI,Morada,CodArmazem) values (?,?,?,?,?)"
+            );
             System.out.println("Introduza o numero do funcionario:");
             int numFunc = in.nextInt();
             preparedStatement.setInt(1,numFunc);
